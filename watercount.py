@@ -1,14 +1,8 @@
 #!/usr/bin/env python
 
-import sqlite3
 import os
 import time
-import glob
 import RPi.GPIO as GPIO
- 
-#global variables
-speriod=(15*60)-1
-dbname='/home/pi/1-1/mydatabase.db'
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -27,7 +21,7 @@ def readadc(adcnum, clockpin, mosipin, misopin, cspin):
         commandout |= 0x18	#start bit + single-ended bit
         commandout <<= 3	#we only need to send 3 bits here
         
-		for i in range(5):
+	for i in range(5):
                 if (commandout & 0x80):
                         GPIO.output(mosipin, True)
                 else:
@@ -70,13 +64,13 @@ while True:
         #read the analog pin
         value = readadc(flow_adc, CLK, MOSI, MISO, CS)
 		
-		while (value > 512):
-			value = readadc(flow_adc, CLK, MOSI, MISO, CS)
+	while (value > 512):
+		value = readadc(flow_adc, CLK, MOSI, MISO, CS)
 		
 		count++;
 		
-		while (value < 512):
-			value = readadc(flow_adc, CLK, MOSI, MISO, CS)
+	while (value < 512):
+		value = readadc(flow_adc, CLK, MOSI, MISO, CS)
 			
-		print(count);
+	print(count);
 		
