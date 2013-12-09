@@ -42,6 +42,7 @@ def readadc(adcnum, clockpin, mosipin, misopin, cspin):
  
         GPIO.output(cspin, True)
         adcout >>= 1	#first bit is 'null' so drop it
+        time.sleep(1)
         return adcout
  
 #pins connected from the GPIO port on the ADC to the Raspberry Pi
@@ -58,19 +59,21 @@ GPIO.setup(CS, GPIO.OUT)
  
 #water flow sensor connected to adc #0
 flow_adc = 0
-count=0
- 
+count = 0
+value = 0
 while True:
         #read the analog pin
         value = readadc(flow_adc, CLK, MOSI, MISO, CS)
-		
-	while (value > 512):
+	val = value	
+	while value < 512:
 		value = readadc(flow_adc, CLK, MOSI, MISO, CS)
-		
-		count++;
-		
-	while (value < 512):
-		value = readadc(flow_adc, CLK, MOSI, MISO, CS)
+		count = count + 1
+		print(val)
+		print(count)
+		flow = count / 5.5
+		print(flow)
+#	while (value < 512):
+#		value = readadc(flow_adc, CLK, MOSI, MISO, CS)
 			
-	print(count);
+#	print(count);
 		
