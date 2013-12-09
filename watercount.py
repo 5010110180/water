@@ -27,7 +27,7 @@ def readadc(adcnum, clockpin, mosipin, misopin, cspin):
                 else:
                         GPIO.output(mosipin, False)
                 #negative clock signals generator
-				commandout <<= 1
+		commandout <<= 1
                 GPIO.output(clockpin, True)
                 GPIO.output(clockpin, False)
  
