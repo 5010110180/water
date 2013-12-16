@@ -7,6 +7,7 @@ import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
+commandout = 0
 
 #read GPIO data from MCP3008 chip, 8 possible adc's (0 thru 7)
 def readadc(adcnum, clockpin, mosipin, misopin, cspin):
@@ -31,7 +32,7 @@ def readadc(adcnum, clockpin, mosipin, misopin, cspin):
                 GPIO.output(clockpin, True)
                 GPIO.output(clockpin, False)
  
-		#read in one empty bit, one null bit and 10 ADC bits
+	#read in one empty bit, one null bit and 10 ADC bits
         adcout = 0
         for i in range(12):
                 GPIO.output(clockpin, True)
@@ -61,19 +62,41 @@ GPIO.setup(CS, GPIO.OUT)
 flow_adc = 0
 count = 0
 value = 0
+vol = 0
+
+#read the analog pin
 while True:
-        #read the analog pin
         value = readadc(flow_adc, CLK, MOSI, MISO, CS)
-	val = value	
-	while value < 512:
-		value = readadc(flow_adc, CLK, MOSI, MISO, CS)
-		count = count + 1
-		print(val)
-		print(count)
-		flow = count / 5.5
-		print(flow)
-#	while (value < 512):
-#		value = readadc(flow_adc, CLK, MOSI, MISO, CS)
-			
-#	print(count);
+	if (value > 1000):	
+		while True:
+			value = readadc(flow_adc, CLK, MOSI, MISO, CS)
 		
+			while (value > 1000):
+				value = readadc(flow_adc, CLK, MOSI, MISO, CS)
+			
+			count = count + 1
+			vol = count*1.5/5.5
+
+			while (value <= 1000):
+				value = readadc(flow_adc, CLK, MOSI, MISO, CS)
+			
+			print('Count : ', count, ' : Volume : ', vol, ' litre')
+			print('=======================')
+			
+	else:
+		while True:
+			value = readadc(flow_adc, CLK, MOSI, MISO, CS)
+		
+			while (value >= 1000):
+				value = readadc(flow_adc, CLK, MOSI, MISO, CS)
+			
+			count = count + 1
+			vol = count*1.5/5.5
+
+			while (value < 1000):
+				value = readadc(flow_adc, CLK, MOSI, MISO, CS)
+			
+			print('Count : ', count, ' : Volume : ', vol, ' litre')
+			print('=======================')
+			
+			
